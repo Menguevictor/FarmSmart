@@ -52,7 +52,7 @@ class CourseView(APIView):
 class CourseViewRegister(APIView):
     serialiser_class = CourseSerialiser
 
-    permission_classes = (IsLecturerAuthenticated,)
+    permission_classes = (IsGroupAdminAuthenticated,)
         #  create new Course or register Course
     def post(self, request, format=None):
         serialiser = self.serialiser_class(data=request.data)
