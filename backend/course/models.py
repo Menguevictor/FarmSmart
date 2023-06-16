@@ -7,7 +7,9 @@ from users.models import Lecturer
 class Course(models.Model):
     name = models.CharField(max_length=250)
     lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
-    
+
+    def __str__(self):
+        return self.name
 
 
 class Exam(models.Model):
