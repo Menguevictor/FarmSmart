@@ -83,6 +83,22 @@ class User(AbstractBaseUser, PermissionsMixin):
     #     return self.is_admin
 
 
+# {
+#     "birthDay": "2023-5-22",
+#     "registration": "19Y2596",
+#     "adress":"yaoundé",
+#     "nationality":"cameroon",
+#     "phone":"696114119",
+#     "user": {
+#         "email":"lecturere1@gmail.com",
+#         "gender": "Female",
+#         "first_name":"jean",
+#         "last_name": "yvelos",
+#         "password" : "2002lecturer@"
+#     }
+# }
+
+
 class Lecturer(models.Model):
     registration = models.CharField(primary_key=True, max_length=7)
     adress = models.CharField(max_length=200)
@@ -105,7 +121,8 @@ class Lecturer(models.Model):
         "gender": "Female",
         "first_name":"jean",
         "last_name": "yvelos",
-        "password" : "1234jean@"
+        "password" : "xdk@856dkfls%",
+        "re_password" : "1234jean@"
     }
 }
         ]

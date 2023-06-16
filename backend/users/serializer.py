@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth import authenticate, get_user_model
 from django.http.response import Http404
+from django.contrib.auth.hashers import make_password
 
 # serialize model admin
 class UserSerialiser(serializers.ModelSerializer):
@@ -17,7 +18,11 @@ class StudentSerialiser(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
+        make_password(user_data['password'])
+        print(user_data)
         user = User.objects.create(**user_data, is_student=True)
+        user.set_password(user_data['password'])
+        user.save()
         student = Student.objects.create(user=user, **validated_data)
 
         return student
@@ -34,6 +39,8 @@ class LecturerSerialiser(serializers.ModelSerializer):
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         user = User.objects.create(**user_data, is_lecturer=True)
+        user.set_password(user_data['password'])
+        user.save()
         lecturer = Lecturer.objects.create(user=user, **validated_data)
 
         return lecturer
