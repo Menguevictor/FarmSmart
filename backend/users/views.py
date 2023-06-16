@@ -1,24 +1,23 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http.response import JsonResponse, Http404, HttpResponse
-from rest_framework import status, viewsets, mixins, permissions
+from rest_framework import status,permissions
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import login, logout
 from .models import *
 from .serializer import *
+from .permission import *
 
 
 
-# Create class view Etudiant.
 class EtudiantView(APIView):
 
     serialiser_class = StudentSerialiser
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsGroupAdminAuthenticated,)
     # get a Etudiant
     def get_Etudiant(self, id):
         try: 
-            etudiant = Student.objects.get(registration=id)
+            etudiant = Student.objects.get(id=id)
             return etudiant
         except:
             raise Http404
@@ -36,7 +35,12 @@ class EtudiantView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-    #  create new Etudiant or register Etudiant
+
+# Create class view Etudiant.
+class EtudiantRegisterView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    serialiser_class = StudentSerialiser
+        #  create new Etudiant or register Etudiant
     def post(self, request, format=None):
         serialiser = self.serialiser_class(data=request.data)
 
@@ -46,11 +50,29 @@ class EtudiantView(APIView):
             return Response(serialiser.data, status=status.HTTP_201_CREATED)
 
         return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EtudiantDeleteView(APIView):
+    permission_classes = (IsAdminAuthenticated,)
+    serialiser_class = StudentSerialiser
     
-    # update Etudiant
+    # delete Etudiant
+    def delete(self, request, id=None):
+        # get Etudiant to delete
+        etudiant = Student.objects.get(id=id)
+        serializer = self.serialiser_class(etudiant)
+        etudiant.delete()
+
+        return Response(serializer.errors, status=status.HTTP_204_NOT_CONTENT)
+
+class EtudiantUpdateView(APIView):
+    permission_classes = (IsAdminAuthenticated,)
+    serialiser_class = StudentSerialiser
+        #  create new Etudiant or register Etudiant
+    
+        # update Etudiant
     def put(self, request, id=None):
         # get Etudiant to update data
-        etudiant = Student.objects.get(registration=id)
+        etudiant = Student.objects.get(id=id)
         serializer = self.serialiser_class(instance=etudiant, data=request.data, partial=True)
 
         # check if data is valid
@@ -59,25 +81,16 @@ class EtudiantView(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    # delete Etudiant
-    def delete(self, request, id=None):
-        # get Etudiant to delete
-        etudiant = Student.objects.get(registration=id)
-        serializer = self.serialiser_class(etudiant)
-        etudiant.delete()
-
-        return Response(serializer.errors, status=status.HTTP_204_NOT_CONTENT)
-
+     
 
 # crud of object lecturer
 class LecturerView(APIView):
     serialiser_class = LecturerSerialiser
+    permission_classes = (IsGroupAdminAuthenticated,)
     # get a lecturer
     def get_Lecturer(self, id):
         try: 
-            lecturer = Lecturer.objects.get(registration=id)
+            lecturer = Lecturer.objects.get(id=id)
             return lecturer
         except:
             raise Http404
@@ -93,8 +106,13 @@ class LecturerView(APIView):
             serializer = self.serialiser_class(lecturers, many=True)
 
         return Response(serializer.data)
+           
 
-    #  create new Lecturer or register lecturer
+
+class LecturerRegisterView(APIView):
+    serialiser_class = LecturerSerialiser
+    permission_classes = (IsAdminAuthenticated,)
+     #  create new Lecturer or register lecturer
     def post(self, request, format=None):
         serialiser = self.serialiser_class(data=request.data)
 
@@ -104,11 +122,25 @@ class LecturerView(APIView):
             return Response(serialiser.data, status=status.HTTP_201_CREATED)
 
         return Response(serialiser.errors, status=status.HTTP_400_BAD_REQUEST)
-       
-    
+
+class LecturerDelete(APIView):
+    permission_classes = (IsAdminAuthenticated,)
+    serialiser_class = LecturerSerialiser
+    def delete(self, request, id=None):
+        # get lecturer to delete
+        lecturer = Lecturer.objects.get(id=id)
+        serializer = self.serialiser_class(lecturer)
+        lecturer.delete()
+
+        return Response(serializer.errors, status=status.HTTP_204_NOT_CONTENT)
+
+
+class LecturerUpdateView(APIView):
+    permission_classes = (IsAdminAuthenticated,)
+    serialiser_class = LecturerSerialiser
     def put(self, request, id=None):
         # get lecturer to update data
-        lecturer = Lecturer.objects.get(registration=id)
+        lecturer = Lecturer.objects.get(id=id)
         serializer = self.serialiser_class(instance=lecturer, data=request.data, partial=True)
 
         # check if data is valid
@@ -117,14 +149,6 @@ class LecturerView(APIView):
             return Response(serializer.data)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, id=None):
-        # get lecturer to delete
-        lecturer = Lecturer.objects.get(registration=id)
-        serializer = self.serialiser_class(lecturer)
-        lecturer.delete()
-
-        return Response(serializer.errors, status=status.HTTP_204_NOT_CONTENT)
 
 
 """
@@ -137,7 +161,6 @@ class UserLoginView(APIView):
     # metho post to check user authenticate
     def post(self, request):
         data = request.data
-        
         serializer = UserLoginSerialiser(data=data)
 
         if serializer.is_valid(raise_exception=True):

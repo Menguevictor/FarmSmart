@@ -8,13 +8,13 @@ class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
     add_form = UserCreationForm
-    model = Admin
+    model = User
 
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'first_name', 'is_staff', 'is_superuser')
-    list_filter = ('is_superuser',)
+    list_display = ('email', 'first_name', 'is_active','is_staff', 'is_superuser', 'is_student', 'is_lecturer',)
+    list_filter = ('is_superuser','is_lecturer','is_student',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'gender',)}),
@@ -49,6 +49,6 @@ class LecturerAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(Admin, UserAdmin)
+admin.site.register(User, UserAdmin)
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Lecturer, LecturerAdmin)

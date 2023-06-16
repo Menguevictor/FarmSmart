@@ -4,36 +4,36 @@ from django.contrib.auth import authenticate, get_user_model
 from django.http.response import Http404
 
 # serialize model admin
-class AdminSerialiser(serializers.ModelSerializer):
+class UserSerialiser(serializers.ModelSerializer):
     class Meta:   
-        model = Admin
+        model = User
         fields = '__all__'
 # serialize model Student
 class StudentSerialiser(serializers.ModelSerializer):
-    user = AdminSerialiser()
+    user = UserSerialiser()
     class Meta:   
         model = Student
         fields = '__all__'
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = Admin.objects.create(**user_data)
-        Student = Student.objects.create(user=user, **validated_data)
+        user = User.objects.create(**user_data, is_student=True)
+        student = Student.objects.create(user=user, **validated_data)
 
-        return Student
+        return student
 
 
     
 # serialize model lecturer
 class LecturerSerialiser(serializers.ModelSerializer):
-    user = AdminSerialiser()
+    user = UserSerialiser()
     class Meta:   
         model = Lecturer
         fields = '__all__'
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        user = Admin.objects.create(**user_data)
+        user = User.objects.create(**user_data, is_lecturer=True)
         lecturer = Lecturer.objects.create(user=user, **validated_data)
 
         return lecturer

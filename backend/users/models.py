@@ -14,9 +14,9 @@ class MyUserManager(BaseUserManager):
         if not password:
             raise ValueError('Users password is required')
 
+        
         user = self.model(
             email=self.normalize_email(email),
-            password=password,
             first_name=first_name,
         )
 
@@ -38,7 +38,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class Admin(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
 
     Gender = [
         ('Female', 'Female'),
@@ -55,6 +55,8 @@ class Admin(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False)
+    is_lecturer = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -84,7 +86,7 @@ class Admin(AbstractBaseUser, PermissionsMixin):
 class Lecturer(models.Model):
     registration = models.CharField(primary_key=True, max_length=7)
     adress = models.CharField(max_length=200)
-    user = models.OneToOneField(Admin, on_delete=models.CASCADE) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
     birthDay = models.DateField('Birth Day', max_length=60, null=True)
     nationality = models.CharField(max_length=60, null=True)
     phone = models.IntegerField()
@@ -95,14 +97,9 @@ class Lecturer(models.Model):
     """_summary_
         data = [
 {
-    
-    "registration":"19M2596",
     "birthDay": "2023-5-22",
     "nationality":"cameroon",
-    "name_father":"father",
-    "name_mother":"mother",
-    "phone_father":689597,
-    "phone_mother":4589648,
+    "phone":"696114119",
     "user": {
         "email":"jeanpetit@gmail.com",
         "gender": "Female",
@@ -117,10 +114,10 @@ class Lecturer(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(Admin, on_delete=models.CASCADE) 
+    user = models.OneToOneField(User, on_delete=models.CASCADE) 
     birthDay = models.DateField('Birth Day', max_length=60, null=True)
     nationality = models.CharField(max_length=60, null=True)
-    phone_mother = models.IntegerField(null=True)
+    phone = models.IntegerField(null=True)
 
 
     def __str__(self):
