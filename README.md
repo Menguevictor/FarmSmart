@@ -105,3 +105,14 @@ using python in backend
   ```
   /1/detail
   ```
+
+## Deployement
+  - [FarmSmart.com](https://farm-smart.onrender.com)
+
+
+## Social network
+- [linkedin](https://linkedin.com/in/jeanpetit)
+
+## Authors
+
+@jeanpetitt
