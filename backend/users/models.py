@@ -89,13 +89,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 #     "adress":"yaoundé",
 #     "nationality":"cameroon",
 #     "phone":"696114119",
-#     "user": {
-#         "email":"lecturere1@gmail.com",
-#         "gender": "Female",
-#         "first_name":"jean",
-#         "last_name": "yvelos",
-#         "password" : "2002lecturer@"
-#     }
+    # "user": {
+    #     "email":"lecturere1@gmail.com",
+    #     "gender": "Female",
+    #     "first_name":"jean",
+    #     "last_name": "yvelos",
+    #     "password" : "2002lecturer@"
+    # }
 # }
 
 
